@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: A sample SAM template for deploying Lambda functions.
+
+Resources:
+  UpdateEksDeploymentsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "UPDATE-EKS-DEPLOYMENT-ROLE"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: "UPDATE-EKS-DEPLOYMENT-POLICY"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - eks:DescribeCluster
+                Resource: !Sub 'arn:aws:eks:${AWS::Region}:${AWS::AccountId}:cluster/fargate-cluster'
+
+
+  UpdateEksDeploymentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: update_eks_deployments.handler
+      Runtime: python3.9
+      MemorySize: 128
+      Role: !GetAtt UpdateEksDeploymentsRole.Arn
+      FunctionName: !Sub "UPDATE-EKS-DEPLOYMENT"
+      Timeout: 30
+
+
+
