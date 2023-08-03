@@ -1,7 +1,6 @@
 "Lambda function list pods in EKS cluster"
 import base64
 import logging
-import os
 import re
 
 import boto3
@@ -94,31 +93,12 @@ def handler(_event, _context):
         'users': [{'name': 'user1', "user": {'token': bearer_token}}]
     }
 
-    # filepath = f"cluster.crt"
-    # with open(filepath, "w+") as f:
-    #     f.write(cluster["ca_cert"])
-
     config.load_kube_config_from_dict(config_dict=kubeconfig)
 
-    configuration = client.Configuration()
-    configuration.api_key['authorization'] = f"Bearer {bearer_token}"
-    configuration.host = cluster["endpoint"]
-    configuration.verify_ssl = False
-    # configuration.ssl_ca_cert = filepath
-
-    api_client = client.ApiClient(configuration)
+    api_client = client.ApiClient()
     apps_v1_api = client.AppsV1Api(api_client)
-    core_v1_api = client.CoreV1Api()
-    print(f"api_client.configuration=={api_client.configuration.host}")
-    print(f"api_client.configuration=={api_client.configuration.api_key}")
-    print(f"api_client.configuration=={api_client.configuration.api_key_prefix}")
-    print(f"configuration=={configuration.host}")
-    print(f"configuration=={configuration.api_key}")
-    print(f"configuration=={configuration.api_key_prefix}")
-
 
     ret = apps_v1_api.list_namespaced_deployment("default")
-    # ret = core_v1_api.list_namespaced_pod("default")
 
     return f"There are {len(ret.items)} deployments in the default namespace."
 
