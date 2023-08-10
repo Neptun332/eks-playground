@@ -8,15 +8,12 @@ metadata:
 privateCluster:
   enabled: false
 
-fargateProfiles:
-  - name: fp-default
-    selectors:
-      # All workloads in the "default" Kubernetes namespace will be
-      # scheduled onto Fargate:
-      - namespace: default
-      # All workloads in the "kube-system" Kubernetes namespace will be
-      # scheduled onto Fargate:
-      - namespace: kube-system
+nodeGroups:
+  - name: ng-default
+    instanceType: t3.micro
+    minSize: 2
+    maxSize: 4
+    desiredCapacity: 2
 
 iamIdentityMappings:
   - arn: arn:aws:iam::${ACCOUNT_NUMBER}:role/UPDATE-EKS-DEPLOYMENT-ROLE
