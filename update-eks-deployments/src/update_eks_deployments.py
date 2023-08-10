@@ -1,54 +1,32 @@
 "Lambda function list pods in EKS cluster"
 import logging
-from typing import Dict
 
 import boto3
-from kubernetes import client, config
 
 from ClusterClient import ClusterClient
+from HardcodedDeploymentTemplateProvider import HardcodedDeploymentTemplateProvider
+from K8sClient import K8sClient
 from STSClient import STSClient
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-def get_cube_config(cluster: Dict[str, str], bearer_token: str) -> Dict:
-    return {
-        'apiVersion': 'v1',
-        'clusters': [{
-            'name': 'cluster1',
-            'cluster': {
-                'certificate-authority-data': cluster["ca"],
-                'server': cluster["endpoint"]}
-        }],
-        'contexts': [{'name': 'context1', 'context': {'cluster': 'cluster1', "user": "user1"}}],
-        'current-context': 'context1',
-        'kind': 'Config',
-        'preferences': {},
-        'users': [{'name': 'user1', "user": {'token': bearer_token}}]
-    }
-
-
 def handler(event, context):
     "Lambda handler"
+    streams = ["stream-4", "stream-5", "stream-6"]
+
     cluster_name = "fargate-cluster"
     session = boto3.session.Session()
     sts_client = STSClient(session)
     cluster_client = ClusterClient()
+    k8s_client = K8sClient(cluster_name, sts_client, cluster_client)
 
-    cluster_info = cluster_client.get_cluster_info(cluster_name)
-    bearer_token = sts_client.get_bearer_token_for_cluster(cluster_name)
+    deployments = [HardcodedDeploymentTemplateProvider.create_deployment_template(name=steam_name)
+                   for steam_name in streams]
 
-    kubeconfig = get_cube_config(cluster_info, bearer_token)
-
-    config.load_kube_config_from_dict(config_dict=kubeconfig)
-
-    api_client = client.ApiClient()
-    apps_v1_api = client.AppsV1Api(api_client)
-
-    ret = apps_v1_api.list_namespaced_deployment("default")
-
-    return f"There are {len(ret.items)} deployments in the default namespace."
+    k8s_client.create_deployments(deployments)
+    k8s_client.delete_all_deployments()
 
 
 print(handler(None, None))

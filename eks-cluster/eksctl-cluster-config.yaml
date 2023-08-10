@@ -8,7 +8,7 @@ metadata:
 privateCluster:
   enabled: false
 
-nodeGroups:
+managedNodeGroups:
   - name: ng-default
     instanceType: t3.micro
     minSize: 2
