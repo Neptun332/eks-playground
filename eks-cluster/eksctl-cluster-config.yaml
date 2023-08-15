@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: fargate-cluster
+  name: my-cluster
   region: eu-west-1
 
 privateCluster:
@@ -10,10 +10,13 @@ privateCluster:
 
 managedNodeGroups:
   - name: ng-default
-    instanceType: t3.micro
+    instanceType: t2.small
     minSize: 2
-    maxSize: 4
+    maxSize: 5
     desiredCapacity: 2
+    iam:
+      withAddonPolicies:
+        autoScaler: true
 
 iamIdentityMappings:
   - arn: arn:aws:iam::${ACCOUNT_NUMBER}:role/UPDATE-EKS-DEPLOYMENT-ROLE

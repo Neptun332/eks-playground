@@ -26,7 +26,7 @@ Resources:
               - Effect: Allow
                 Action:
                   - eks:DescribeCluster
-                Resource: !Sub 'arn:aws:eks:${AWS::Region}:${AWS::AccountId}:cluster/fargate-cluster'
+                Resource: !Sub 'arn:aws:eks:${AWS::Region}:${AWS::AccountId}:cluster/my-cluster'
 
 
   UpdateEksDeploymentsFunction:
