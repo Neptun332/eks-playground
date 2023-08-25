@@ -1,0 +1,3 @@
+class StreamCompletedException(Exception):
+
+    pass
