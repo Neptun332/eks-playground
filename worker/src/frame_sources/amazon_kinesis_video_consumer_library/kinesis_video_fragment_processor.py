@@ -17,7 +17,7 @@ __author__ = "Dean Colcott <https://www.linkedin.com/in/deancolcott/>"
 import io
 import logging
 import imageio.v3 as iio
-import amazon_kinesis_video_consumer_library.ebmlite.util as emblite_utils
+import frame_sources.amazon_kinesis_video_consumer_library.ebmlite.util as emblite_utils
 
 # Init the logger.
 log = logging.getLogger(__name__)

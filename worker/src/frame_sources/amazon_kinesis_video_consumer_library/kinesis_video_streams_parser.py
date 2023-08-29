@@ -44,7 +44,7 @@ __author__ = "Dean Colcott <https://www.linkedin.com/in/deancolcott/>"
 import timeit
 import logging
 from threading import Thread
-from amazon_kinesis_video_consumer_library.ebmlite import loadSchema
+from frame_sources.amazon_kinesis_video_consumer_library.ebmlite import loadSchema
 from exceptions.StreamCompletedException import StreamCompletedException
 
 # Init the logger.

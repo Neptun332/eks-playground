@@ -18,7 +18,6 @@ __all__ = ['createID', 'validateID', 'toXml', 'xml2ebml', 'loadXml', 'pprint',
            'printSchemata']
 
 import ast
-from base64 import b64encode, b64decode
 from io import StringIO
 import pathlib
 import struct
